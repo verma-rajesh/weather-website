@@ -6,9 +6,11 @@ const forecast = require('./utilis/forecast');
 
 const app = express();
 
+const port = process.env.PORT || 3000;
+
 // Define path for Express config
-const publicDirectoryPath = path.join(__dirname,'../public');
-const viewsPath = path.join(__dirname,'../templates/views');
+const publicDirectoryPath = path.join(__dirname, '../public');
+const viewsPath = path.join(__dirname, '../templates/views');
 const partialsPath = path.join(__dirname, '../templates/partials');
 
 // Setup handlebars engine and views location
@@ -21,50 +23,50 @@ app.use(express.static(publicDirectoryPath));
 
 
 app.get('', (req, res) => {
-    res.render('index',{
-        title : 'Weather',
-        name : 'Rajesh Verma'
+    res.render('index', {
+        title: 'Weather',
+        name: 'Rajesh Verma'
     });
 })
-app.get('/about' , (req, res) => {
-    res.render('about',{
-    title : 'About Me',
-    name : 'Rajesh Verma'
+app.get('/about', (req, res) => {
+    res.render('about', {
+        title: 'About Me',
+        name: 'Rajesh Verma'
     });
 })
 
 app.get('/help', (req, res) => {
-    res.render('help',{
-        title : 'Help',
-        name : 'Rajesh Verma'
+    res.render('help', {
+        title: 'Help',
+        name: 'Rajesh Verma'
     });
 })
 
 app.get('/weather', (req, res) => {
-    if(!req.query.address){
+    if (!req.query.address) {
         return res.send({
-            error : 'Must provide your address'
+            error: 'Must provide your address'
         })
     }
-    
-    geocode(req.query.address,(error, {latitude, longitude, location} = {}) => {
-        if(error){
+
+    geocode(req.query.address, (error, { latitude, longitude, location } = {}) => {
+        if (error) {
             return res.send({
-                error : error
+                error: error
             })
         }
-        
+
         forecast(latitude, longitude, (error, forecastData) => {
-            if(error){
-               return res.send({
-                error : error
+            if (error) {
+                return res.send({
+                    error: error
                 })
             }
 
             res.send({
-                location : location,
-                forecastData :forecastData,
-                address : req.query.address
+                location: location,
+                forecastData: forecastData,
+                address: req.query.address
             })
         })
     })
@@ -74,20 +76,20 @@ app.get('/weather', (req, res) => {
 app.get('/help/*', (req, res) => {
     res.render('404', {
         title: '404',
-        name : 'Rajesh Verma',
-        errorMessage : 'Help article not found.'
+        name: 'Rajesh Verma',
+        errorMessage: 'Help article not found.'
     })
 })
 
 
 app.get('*', (req, res) => {
     res.render('404', {
-        title : '404',
-        name : 'Rajesh Verma',
-        errorMessage : 'Page not found'
+        title: '404',
+        name: 'Rajesh Verma',
+        errorMessage: 'Page not found'
     })
 })
 
-app.listen(3000,() =>{
-    console.log('server is started at port : 3000');
+app.listen(port, () => {
+    console.log(`server is started at port : ${port}`);
 })
